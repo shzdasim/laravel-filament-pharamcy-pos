@@ -11,6 +11,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Log;
 
 class PurchaseInvoiceResource extends Resource
 {
@@ -100,6 +101,8 @@ class PurchaseInvoiceResource extends Resource
                                     ->debounce(500)
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         $pack_size = (int) $get('pack_size') ?? 0;
+                                        $pack_quantity = (int) $get('pack_quantity') ?? 0;
+                                        $unit_bonus = (int) $get('unit_bonus') ?? 0;
                                         $unit_quantity = $state * $pack_size;
                                         $set('unit_quantity', $unit_quantity);
                                         $set('quantity', $unit_quantity + ((int) $get('unit_bonus') ?? 0));
@@ -110,13 +113,29 @@ class PurchaseInvoiceResource extends Resource
                                         $discount_amount = ($total_cost * $item_discount) / 100;
                                         $total_cost_with_discount = $total_cost - $discount_amount;
                                         $set('sub_total', $total_cost_with_discount);
+                                        
+                                        $pack_purchase_price = (float) $get('pack_purchase_price') ?? 0;
+                                        $item_discount_percentage = (float) $get('item_discount_percentage') ?? 0;
+                                
+                                        // Calculate total effective quantity
+                                        $total_quantity = ($pack_size * $pack_quantity) + $unit_bonus;
 
+                                        if ($total_quantity > 0) {
+                                            // Calculate average price
+                                            $avg_price = ($pack_quantity * $pack_purchase_price) / $total_quantity;
+                                            
+                                            // Apply discount
+                                            $avg_price_with_discount = $avg_price * (1 - $item_discount_percentage / 100);
+                                
+                                            $set('avg_price', $avg_price_with_discount);
+                                        } else {
+                                            $set('avg_price', 0);
+                                        }
+
+                                        // Calculate margin last
                                         $unit_sale_price = (float) $get('unit_sale_price') ?? 0;
-                                        $margin = ($unit_sale_price > 0) ? (($unit_sale_price - $unit_purchase_price) / $unit_sale_price) * 100 : 0;
+                                        $margin = ($unit_sale_price > 0) ? (($unit_sale_price - $total_cost_with_discount / ($unit_quantity + ((int) $get('unit_bonus') ?? 0))) / $unit_sale_price) * 100 : 0;
                                         $set('margin', $margin);
-
-                                        $avg_price = ($unit_quantity > 0) ? $total_cost_with_discount / $unit_quantity : 0;
-                                        $set('avg_price', $avg_price);
 
                                         // Update total amount without discount
                                         $total_amount = collect($get('../../purchaseInvoiceItems'))
@@ -138,6 +157,8 @@ class PurchaseInvoiceResource extends Resource
                                     ->debounce(500)
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         $pack_size = (int) $get('pack_size') ?? 0;
+                                        $pack_quantity = (int) $get('pack_quantity') ?? 0;
+                                        $unit_bonus = (int) $get('unit_bonus') ?? 0;
                                         if ($pack_size > 0) {
                                             $pack_quantity = $state / $pack_size;
                                             $set('pack_quantity', $pack_quantity);
@@ -150,13 +171,29 @@ class PurchaseInvoiceResource extends Resource
                                         $discount_amount = ($total_cost * $item_discount) / 100;
                                         $total_cost_with_discount = $total_cost - $discount_amount;
                                         $set('sub_total', $total_cost_with_discount);
+                                      
+
+                                        $pack_purchase_price = (float) $get('pack_purchase_price') ?? 0;
+                                        $item_discount_percentage = (float) $get('item_discount_percentage') ?? 0;
+
+                                        // Calculate total effective quantity
+                                        $total_quantity = ($pack_size * $pack_quantity) + $unit_bonus;
+
+                                        if ($total_quantity > 0) {
+                                            // Calculate average price
+                                            $avg_price = ($pack_quantity * $pack_purchase_price) / $total_quantity;
+                                            
+                                            // Apply discount
+                                            $avg_price_with_discount = $avg_price * (1 - $item_discount_percentage / 100);
+                                
+                                            $set('avg_price', $avg_price_with_discount);
+                                        } else {
+                                            $set('avg_price', 0);
+                                        }
 
                                         $unit_sale_price = (float) $get('unit_sale_price') ?? 0;
-                                        $margin = ($unit_sale_price > 0) ? (($unit_sale_price - $unit_purchase_price) / $unit_sale_price) * 100 : 0;
+                                        $margin = ($unit_sale_price > 0) ? (($unit_sale_price - $total_cost_with_discount / ($state + ((int) $get('unit_bonus') ?? 0))) / $unit_sale_price) * 100 : 0;
                                         $set('margin', $margin);
-
-                                        $avg_price = ($state > 0) ? $total_cost_with_discount / $state : 0;
-                                        $set('avg_price', $avg_price);
 
                                         // Update total amount without discount
                                         $total_amount = collect($get('../../purchaseInvoiceItems'))
@@ -178,6 +215,8 @@ class PurchaseInvoiceResource extends Resource
                                     ->debounce(500)
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         $pack_size = (int) $get('pack_size') ?? 0;
+                                        $pack_quantity = (int) $get('pack_quantity') ?? 0;
+                                        $unit_bonus = (int) $get('unit_bonus') ?? 0;
                                         if ($pack_size > 0) {
                                             $unit_purchase_price = $state / $pack_size;
                                             $set('unit_purchase_price', $unit_purchase_price);
@@ -190,12 +229,27 @@ class PurchaseInvoiceResource extends Resource
                                         $total_cost_with_discount = $total_cost - $discount_amount;
                                         $set('sub_total', $total_cost_with_discount);
 
-                                        $unit_sale_price = (float) $get('unit_sale_price') ?? 0;
-                                        $margin = ($unit_sale_price > 0) ? (($unit_sale_price - $unit_purchase_price) / $unit_sale_price) * 100 : 0;
-                                        $set('margin', $margin);
+                                        $pack_purchase_price = (float) $get('pack_purchase_price') ?? 0;
+                                        $item_discount_percentage = (float) $get('item_discount_percentage') ?? 0;
+                                
+                                        // Calculate total effective quantity
+                                        $total_quantity = ($pack_size * $pack_quantity) + $unit_bonus;
 
-                                        $avg_price = ($unit_quantity > 0) ? $total_cost_with_discount / $unit_quantity : 0;
-                                        $set('avg_price', $avg_price);
+                                        if ($total_quantity > 0) {
+                                            // Calculate average price
+                                            $avg_price = ($pack_quantity * $pack_purchase_price) / $total_quantity;
+                                            
+                                            // Apply discount
+                                            $avg_price_with_discount = $avg_price * (1 - $item_discount_percentage / 100);
+                                
+                                            $set('avg_price', $avg_price_with_discount);
+                                        } else {
+                                            $set('avg_price', 0);
+                                        }
+
+                                        $unit_sale_price = (float) $get('unit_sale_price') ?? 0;
+                                        $margin = ($unit_sale_price > 0) ? (($unit_sale_price - $total_cost_with_discount / ($unit_quantity + ((int) $get('unit_bonus') ?? 0))) / $unit_sale_price) * 100 : 0;
+                                        $set('margin', $margin);
 
                                         // Update total amount without discount
                                         $total_amount = collect($get('../../purchaseInvoiceItems'))
@@ -217,6 +271,8 @@ class PurchaseInvoiceResource extends Resource
                                     ->debounce(500)
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         $pack_size = (int) $get('pack_size') ?? 0;
+                                        $pack_quantity = (int) $get('pack_quantity') ?? 0;
+                                        $unit_bonus = (int) $get('unit_bonus') ?? 0;
                                         $pack_purchase_price = $state * $pack_size;
                                         $set('pack_purchase_price', $pack_purchase_price);
 
@@ -227,12 +283,27 @@ class PurchaseInvoiceResource extends Resource
                                         $total_cost_with_discount = $total_cost - $discount_amount;
                                         $set('sub_total', $total_cost_with_discount);
 
-                                        $unit_sale_price = (float) $get('unit_sale_price') ?? 0;
-                                        $margin = ($unit_sale_price > 0) ? (($unit_sale_price - $state) / $unit_sale_price) * 100 : 0;
-                                        $set('margin', $margin);
+                                        $pack_purchase_price = (float) $get('pack_purchase_price') ?? 0;
+                                        $item_discount_percentage = (float) $get('item_discount_percentage') ?? 0;
+                                
+                                        // Calculate total effective quantity
+                                        $total_quantity = ($pack_size * $pack_quantity) + $unit_bonus;
 
-                                        $avg_price = ($unit_quantity > 0) ? $total_cost_with_discount / $unit_quantity : 0;
-                                        $set('avg_price', $avg_price);
+                                        if ($total_quantity > 0) {
+                                            // Calculate average price
+                                            $avg_price = ($pack_quantity * $pack_purchase_price) / $total_quantity;
+                                            
+                                            // Apply discount
+                                            $avg_price_with_discount = $avg_price * (1 - $item_discount_percentage / 100);
+                                
+                                            $set('avg_price', $avg_price_with_discount);
+                                        } else {
+                                            $set('avg_price', 0);
+                                        }
+
+                                        $unit_sale_price = (float) $get('unit_sale_price') ?? 0;
+                                        $margin = ($unit_sale_price > 0) ? (($unit_sale_price - $total_cost_with_discount / ($unit_quantity + ((int) $get('unit_bonus') ?? 0))) / $unit_sale_price) * 100 : 0;
+                                        $set('margin', $margin);
 
                                         // Update total amount without discount
                                         $total_amount = collect($get('../../purchaseInvoiceItems'))
@@ -254,6 +325,8 @@ class PurchaseInvoiceResource extends Resource
                                     ->debounce(500)
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         $pack_size = (int) $get('pack_size') ?? 0;
+                                        $pack_quantity = (int) $get('pack_quantity') ?? 0;
+                                        $unit_bonus = (int) $get('unit_bonus') ?? 0;
                                         if ($pack_size > 0) {
                                             $unit_sale_price = $state / $pack_size;
                                             $set('unit_sale_price', $unit_sale_price);
@@ -267,11 +340,27 @@ class PurchaseInvoiceResource extends Resource
                                         $total_cost_with_discount = $total_cost - $discount_amount;
                                         $set('sub_total', $total_cost_with_discount);
 
-                                        $margin = ($state > 0) ? (($state - $unit_purchase_price) / $state) * 100 : 0;
-                                        $set('margin', $margin);
+                                        $pack_purchase_price = (float) $get('pack_purchase_price') ?? 0;
+                                        $item_discount_percentage = (float) $get('item_discount_percentage') ?? 0;
+                                
+                                        // Calculate total effective quantity
+                                        $total_quantity = ($pack_size * $pack_quantity) + $unit_bonus;
 
-                                        $avg_price = ($unit_quantity > 0) ? $total_cost_with_discount / $unit_quantity : 0;
-                                        $set('avg_price', $avg_price);
+                                        if ($total_quantity > 0) {
+                                            // Calculate average price
+                                            $avg_price = ($pack_quantity * $pack_purchase_price) / $total_quantity;
+                                            
+                                            // Apply discount
+                                            $avg_price_with_discount = $avg_price * (1 - $item_discount_percentage / 100);
+                                
+                                            $set('avg_price', $avg_price_with_discount);
+                                        } else {
+                                            $set('avg_price', 0);
+                                        }
+
+                                        $unit_sale_price = (float) $get('unit_sale_price') ?? 0;
+                                        $margin = ($unit_sale_price > 0) ? (($unit_sale_price - $total_cost_with_discount / ($unit_quantity + ((int) $get('unit_bonus') ?? 0))) / $unit_sale_price) * 100 : 0;
+                                        $set('margin', $margin);
 
                                         // Update total amount without discount
                                         $total_amount = collect($get('../../purchaseInvoiceItems'))
@@ -293,6 +382,8 @@ class PurchaseInvoiceResource extends Resource
                                     ->debounce(500)
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         $pack_size = (int) $get('pack_size') ?? 0;
+                                        $pack_quantity = (int) $get('pack_quantity') ?? 0;
+                                        $unit_bonus = (int) $get('unit_bonus') ?? 0;
                                         $pack_sale_price = $state * $pack_size;
                                         $set('pack_sale_price', $pack_sale_price);
 
@@ -304,11 +395,27 @@ class PurchaseInvoiceResource extends Resource
                                         $total_cost_with_discount = $total_cost - $discount_amount;
                                         $set('sub_total', $total_cost_with_discount);
 
-                                        $margin = ($state > 0) ? (($state - $unit_purchase_price) / $state) * 100 : 0;
-                                        $set('margin', $margin);
+                                        $pack_purchase_price = (float) $get('pack_purchase_price') ?? 0;
+                                        $item_discount_percentage = (float) $get('item_discount_percentage') ?? 0;
+                                
+                                        // Calculate total effective quantity
+                                        $total_quantity = ($pack_size * $pack_quantity) + $unit_bonus;
 
-                                        $avg_price = ($unit_quantity > 0) ? $total_cost_with_discount / $unit_quantity : 0;
-                                        $set('avg_price', $avg_price);
+                                        if ($total_quantity > 0) {
+                                            // Calculate average price
+                                            $avg_price = ($pack_quantity * $pack_purchase_price) / $total_quantity;
+                                            
+                                            // Apply discount
+                                            $avg_price_with_discount = $avg_price * (1 - $item_discount_percentage / 100);
+                                
+                                            $set('avg_price', $avg_price_with_discount);
+                                        } else {
+                                            $set('avg_price', 0);
+                                        }
+
+                                        $unit_sale_price = (float) $get('unit_sale_price') ?? 0;
+                                        $margin = ($unit_sale_price > 0) ? (($unit_sale_price - $total_cost_with_discount / ($unit_quantity + ((int) $get('unit_bonus') ?? 0))) / $unit_sale_price) * 100 : 0;
+                                        $set('margin', $margin);
 
                                         // Update total amount without discount
                                         $total_amount = collect($get('../../purchaseInvoiceItems'))
@@ -328,6 +435,8 @@ class PurchaseInvoiceResource extends Resource
                                     ->debounce(500)
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         $pack_size = (int) $get('pack_size') ?? 0;
+                                        $pack_quantity = (int) $get('pack_quantity') ?? 0;
+                                        $unit_bonus = (int) $get('unit_bonus') ?? 0;
                                         if ($pack_size > 0) {
                                             $unit_bonus = $state * $pack_size;
                                             $set('unit_bonus', $unit_bonus);
@@ -342,12 +451,27 @@ class PurchaseInvoiceResource extends Resource
                                         $total_cost_with_discount = $total_cost - $discount_amount;
                                         $set('sub_total', $total_cost_with_discount);
 
-                                        $unit_sale_price = (float) $get('unit_sale_price') ?? 0;
-                                        $margin = ($unit_sale_price > 0) ? (($unit_sale_price - $unit_purchase_price) / $unit_sale_price) * 100 : 0;
-                                        $set('margin', $margin);
+                                        $pack_purchase_price = (float) $get('pack_purchase_price') ?? 0;
+                                        $item_discount_percentage = (float) $get('item_discount_percentage') ?? 0;
+                                
+                                        // Calculate total effective quantity
+                                        $total_quantity = ($pack_size * $pack_quantity) + $unit_bonus;
 
-                                        $avg_price = ($unit_quantity > 0) ? $total_cost_with_discount / $unit_quantity : 0;
-                                        $set('avg_price', $avg_price);
+                                        if ($total_quantity > 0) {
+                                            // Calculate average price
+                                            $avg_price = ($pack_quantity * $pack_purchase_price) / $total_quantity;
+                                            
+                                            // Apply discount
+                                            $avg_price_with_discount = $avg_price * (1 - $item_discount_percentage / 100);
+                                
+                                            $set('avg_price', $avg_price_with_discount);
+                                        } else {
+                                            $set('avg_price', 0);
+                                        }
+
+                                        $unit_sale_price = (float) $get('unit_sale_price') ?? 0;
+                                        $margin = ($unit_sale_price > 0) ? (($unit_sale_price - $total_cost_with_discount / ($unit_quantity + $unit_bonus)) / $unit_sale_price) * 100 : 0;
+                                        $set('margin', $margin);
 
                                         // Update total amount without discount
                                         $total_amount = collect($get('../../purchaseInvoiceItems'))
@@ -367,6 +491,8 @@ class PurchaseInvoiceResource extends Resource
                                     ->debounce(500)
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         $pack_size = (int) $get('pack_size') ?? 0;
+                                        $pack_quantity = (int) $get('pack_quantity') ?? 0;
+                                        $unit_bonus = (int) $get('unit_bonus') ?? 0;
                                         $pack_bonus = $state / $pack_size;
                                         $set('pack_bonus', $pack_bonus);
                                         $set('quantity', ((int) $get('unit_quantity') ?? 0) + $state);
@@ -379,12 +505,26 @@ class PurchaseInvoiceResource extends Resource
                                         $total_cost_with_discount = $total_cost - $discount_amount;
                                         $set('sub_total', $total_cost_with_discount);
 
-                                        $unit_sale_price = (float) $get('unit_sale_price') ?? 0;
-                                        $margin = ($unit_sale_price > 0) ? (($unit_sale_price - $unit_purchase_price) / $unit_sale_price) * 100 : 0;
-                                        $set('margin', $margin);
+                                        $pack_purchase_price = (float) $get('pack_purchase_price') ?? 0;
+                                        $item_discount_percentage = (float) $get('item_discount_percentage') ?? 0;
+                                        // Calculate total effective quantity
+                                        $total_quantity = ($pack_size * $pack_quantity) + $unit_bonus;
 
-                                        $avg_price = ($unit_quantity > 0) ? $total_cost_with_discount / $unit_quantity : 0;
-                                        $set('avg_price', $avg_price);
+                                        if ($total_quantity > 0) {
+                                            // Calculate average price
+                                            $avg_price = ($pack_quantity * $pack_purchase_price) / $total_quantity;
+                                            
+                                            // Apply discount
+                                            $avg_price_with_discount = $avg_price * (1 - $item_discount_percentage / 100);
+                                
+                                            $set('avg_price', $avg_price_with_discount);
+                                        } else {
+                                            $set('avg_price', 0);
+                                        }
+
+                                        $unit_sale_price = (float) $get('unit_sale_price') ?? 0;
+                                        $margin = ($unit_sale_price > 0) ? (($unit_sale_price - $total_cost_with_discount / ($unit_quantity + $state)) / $unit_sale_price) * 100 : 0;
+                                        $set('margin', $margin);
 
                                         // Update total amount without discount
                                         $total_amount = collect($get('../../purchaseInvoiceItems'))
@@ -405,17 +545,35 @@ class PurchaseInvoiceResource extends Resource
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         $unit_purchase_price = (float) $get('unit_purchase_price') ?? 0;
                                         $unit_quantity = (int) $get('unit_quantity') ?? 0;
+                                        $pack_size = (int) $get('pack_size');
+                                        $pack_quantity = (int) $get('pack_quantity') ?? 0;
+                                        $unit_bonus = (int) $get('unit_bonus') ?? 0;
                                         $total_cost = $unit_quantity * $unit_purchase_price;
                                         $discount_amount = ($total_cost * $state) / 100;
                                         $total_cost_with_discount = $total_cost - $discount_amount;
                                         $set('sub_total', $total_cost_with_discount);
 
-                                        $unit_sale_price = (float) $get('unit_sale_price') ?? 0;
-                                        $margin = ($unit_sale_price > 0) ? (($unit_sale_price - $unit_purchase_price) / $unit_sale_price) * 100 : 0;
-                                        $set('margin', $margin);
+                                        $pack_purchase_price = (float) $get('pack_purchase_price') ?? 0;
+                                        $item_discount_percentage = (float) $get('item_discount_percentage') ?? 0;
+                                
+                                        // Calculate total effective quantity
+                                        $total_quantity = ($pack_size * $pack_quantity) + $unit_bonus;
 
-                                        $avg_price = ($unit_quantity > 0) ? $total_cost_with_discount / $unit_quantity : 0;
-                                        $set('avg_price', $avg_price);
+                                        if ($total_quantity > 0) {
+                                            // Calculate average price
+                                            $avg_price = ($pack_quantity * $pack_purchase_price) / $total_quantity;
+                                            
+                                            // Apply discount
+                                            $avg_price_with_discount = $avg_price * (1 - $item_discount_percentage / 100);
+                                
+                                            $set('avg_price', $avg_price_with_discount);
+                                        } else {
+                                            $set('avg_price', 0);
+                                        }
+
+                                        $unit_sale_price = (float) $get('unit_sale_price') ?? 0;
+                                        $margin = ($unit_sale_price > 0) ? (($unit_sale_price - $total_cost_with_discount / ($unit_quantity + ((int) $get('unit_bonus') ?? 0))) / $unit_sale_price) * 100 : 0;
+                                        $set('margin', $margin);
 
                                         // Update total amount without discount
                                         $total_amount = collect($get('../../purchaseInvoiceItems'))
@@ -434,17 +592,35 @@ class PurchaseInvoiceResource extends Resource
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         $unit_purchase_price = (float) $get('unit_purchase_price') ?? 0;
                                         $unit_quantity = (int) $get('unit_quantity') ?? 0;
+                                        $pack_size = (int) $get('pack_size');
+                                        $pack_quantity = (int) $get('pack_quantity') ?? 0;
+                                        $unit_bonus = (int) $get('unit_bonus') ?? 0;
                                         $total_cost = $unit_quantity * $unit_purchase_price;
                                         $discount_amount = ($total_cost * ((float) $get('item_discount_percentage') ?? 0)) / 100;
                                         $total_cost_with_discount = $total_cost - $discount_amount;
                                         $set('sub_total', $total_cost_with_discount);
 
-                                        $unit_sale_price = (float) $get('unit_sale_price') ?? 0;
-                                        $margin = ($unit_sale_price > 0) ? (($unit_sale_price - $unit_purchase_price) / $unit_sale_price) * 100 : 0;
-                                        $set('margin', $margin);
+                                        $pack_purchase_price = (float) $get('pack_purchase_price') ?? 0;
+                                        $item_discount_percentage = (float) $get('item_discount_percentage') ?? 0;
+                                
+                                        // Calculate total effective quantity
+                                        $total_quantity = ($pack_size * $pack_quantity) + $unit_bonus;
 
-                                        $avg_price = ($unit_quantity > 0) ? $total_cost_with_discount / $unit_quantity : 0;
-                                        $set('avg_price', $avg_price);
+                                        if ($total_quantity > 0) {
+                                            // Calculate average price
+                                            $avg_price = ($pack_quantity * $pack_purchase_price) / $total_quantity;
+                                            
+                                            // Apply discount
+                                            $avg_price_with_discount = $avg_price * (1 - $item_discount_percentage / 100);
+                                
+                                            $set('avg_price', $avg_price_with_discount);
+                                        } else {
+                                            $set('avg_price', 0);
+                                        }
+
+                                        $unit_sale_price = (float) $get('unit_sale_price') ?? 0;
+                                        $margin = ($unit_sale_price > 0) ? (($unit_sale_price - $total_cost_with_discount / ($unit_quantity + ((int) $get('unit_bonus') ?? 0))) / $unit_sale_price) * 100 : 0;
+                                        $set('margin', $margin);
 
                                         // Update total amount without discount
                                         $total_amount = collect($get('../../purchaseInvoiceItems'))
