@@ -16,7 +16,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class CustomerResource extends Resource
 {
     protected static ?string $model = Customer::class;
-
+    public static function getNavigationBadge(): ?string
+   {
+       return static::getModel()::count();
+   }
     protected static int $globalSearchResultsLimit = 20;
 
     protected static ?int $navigationSort = 4;

@@ -15,7 +15,10 @@ use Illuminate\Support\HtmlString;
 class BrandResource extends Resource
 {
     protected static ?string $model = Brand::class;
-
+    public static function getNavigationBadge(): ?string
+   {
+       return static::getModel()::count();
+   }
     protected static int $globalSearchResultsLimit = 20;
 
     protected static ?int $navigationSort = 1;

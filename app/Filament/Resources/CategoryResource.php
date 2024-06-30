@@ -17,7 +17,10 @@ class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
     protected static int $globalSearchResultsLimit = 20;
-
+    public static function getNavigationBadge(): ?string
+   {
+       return static::getModel()::count();
+   }
     protected static ?int $navigationSort = 2;
     protected static ?string $navigationIcon = 'heroicon-s-square-3-stack-3d';
     protected static ?string $navigationGroup = 'Item Setup';

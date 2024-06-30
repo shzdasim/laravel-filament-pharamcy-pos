@@ -91,23 +91,14 @@ class PurchaseInvoiceItem extends Model
             // Calculate total quantity
             $totalQuantity = ($totalPackQuantity * $product->pack_size) + $totalUnitBonus;
 
-            // Calculate avg_price
-            $avgPrice = ($totalQuantity > 0) ? ($totalPackQuantity * $item->pack_purchase_price) / $totalQuantity : 0;
-
-            // Apply discount
-            $discountedAvgPrice = $avgPrice * (1 - $item->item_discount_percentage / 100);
-
-            // Calculate margin
-            $margin = ($item->pack_sale_price > 0) ? (($item->pack_sale_price - $discountedAvgPrice) / $item->pack_sale_price) * 100 : 0;
-
-            // Update product fields
+            // Update product fields with values directly from the form fields
             $product->quantity = $totalQuantity;
             $product->pack_purchase_price = $item->pack_purchase_price;
-            $product->unit_purchase_price = ($product->pack_size > 0) ? $item->pack_purchase_price / $product->pack_size : 0;
+            $product->unit_purchase_price = $item->unit_purchase_price;
             $product->pack_sale_price = $item->pack_sale_price;
-            $product->unit_sale_price = ($product->pack_size > 0) ? $item->pack_sale_price / $product->pack_size : 0;
-            $product->avg_price = $discountedAvgPrice;
-            $product->margin = $margin;
+            $product->unit_sale_price = $item->unit_sale_price;
+            $product->avg_price = $item->avg_price;
+            $product->margin = $item->margin;
 
             $product->save();
         }

@@ -16,7 +16,19 @@ use Illuminate\Support\Facades\Log;
 class PurchaseInvoiceResource extends Resource
 {
     protected static ?string $model = PurchaseInvoice::class;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
+
+
+   public static function getNavigationBadge(): ?string
+   {
+       return static::getModel()::count();
+   }
+
+
+   protected static ?string $navigationLabel = 'PURCHASE INVOICES';
+   protected static ?string $navigationGroup = 'INVOICES';
+   protected static ?string $modelLabel = 'Purchase Invoice';
+   protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
