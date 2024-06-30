@@ -13,6 +13,7 @@ class CreatePurchaseInvoiceItemsTable extends Migration
             $table->foreignId('purchase_invoice_id')->constrained()->onDelete('cascade');
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->integer('pack_quantity');
+            $table->integer('pack_size')->nullable();
             $table->integer('unit_quantity');
             $table->decimal('pack_purchase_price', 10, 2);
             $table->decimal('unit_purchase_price', 10, 2);

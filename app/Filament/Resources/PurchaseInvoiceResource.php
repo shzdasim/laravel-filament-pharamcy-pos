@@ -92,7 +92,7 @@ class PurchaseInvoiceResource extends Resource
                                     })
                                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                                     ->columnSpan(4),
-                                Forms\Components\TextInput::make('pack_size')->disabled(),
+                                Forms\Components\TextInput::make('pack_size')->readOnly(),
                                 Forms\Components\TextInput::make('pack_quantity')
                                     ->label('P.Quantity')
                                     ->numeric()

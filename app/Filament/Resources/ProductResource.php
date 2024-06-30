@@ -102,10 +102,13 @@ class ProductResource extends Resource
                 Forms\Components\TextInput::make('avg_price')
                     ->numeric()
                     ->readOnly(),
+                    Forms\Components\TextInput::make('margin')
+                    ->numeric()
+                    ->readOnly(),
                 Forms\Components\TextInput::make('max_discount')
                     ->numeric()
                     ->readOnly(),
-                ])->columns(7),
+                ])->columns(8),
 
                 Forms\Components\Section::make()
                 ->schema([
@@ -153,13 +156,13 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('max_discount')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('category_id')
+                Tables\Columns\TextColumn::make('category.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('supplier_id')
+                Tables\Columns\TextColumn::make('supplier.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('brand_id')
+                Tables\Columns\TextColumn::make('brand.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

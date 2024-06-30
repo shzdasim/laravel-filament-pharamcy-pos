@@ -27,6 +27,7 @@ return new class extends Migration
             $table->decimal('avg_price', 10, 2)->nullable();
             $table->boolean('narcotic')->default(0);
             $table->decimal('max_discount', 5, 2)->nullable();
+            $table->decimal('margin', 5, 2)->nullable();
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->foreignId('supplier_id')->constrained()->onDelete('cascade');
             $table->foreignId('brand_id')->constrained()->onDelete('cascade');

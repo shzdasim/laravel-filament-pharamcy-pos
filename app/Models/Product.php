@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 class Product extends Model
 {
     use HasFactory;
-    protected $fillable = ['product_code','name', 'image', 'formulation', 'description', 'pack_size', 'quantity', 'pack_purchase_price', 'pack_sale_price', 'unit_purchase_price', 'unit_sale_price', 'avg_price', 'narcotic', 'max_discount', 'category_id', 'supplier_id', 'brand_id'];
+    protected $fillable = ['product_code','name', 'image', 'formulation', 'description', 'pack_size', 'quantity', 'pack_purchase_price', 'pack_sale_price', 'unit_purchase_price', 'unit_sale_price', 'avg_price', 'narcotic', 'margin', 'max_discount', 'category_id', 'supplier_id', 'brand_id'];
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -23,6 +23,10 @@ class Product extends Model
     public function brand()
     {
         return $this->belongsTo(Brand::class);
+    }
+    public function purchaseInvoiceItems()
+    {
+        return $this->hasMany(PurchaseInvoiceItem::class);
     }
     protected static function boot()
     {
