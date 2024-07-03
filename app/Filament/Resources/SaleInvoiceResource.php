@@ -75,39 +75,12 @@ class SaleInvoiceResource extends Resource
                             ->schema([
                                 Forms\Components\Select::make('product_id')
                                     ->label('Select Product')
+                                    ->relationship('product', 'name')
                                     ->required()
                                     ->searchable()
                                     ->preload()
                                     ->reactive()
                                     ->allowHtml()
-                                    ->getOptionLabelUsing(function ($value) {
-                                        $product = Product::find($value);
-                                        return $product ? $product->name : '';
-                                    })
-                                    ->getSearchResultsUsing(function (string $search = null) {
-                                        $query = Product::query();
-                                        
-                                        if ($search) {
-                                            $query->where('name', 'like', "%{$search}%")
-                                                ->orWhere('quantity', 'like', "%{$search}%")
-                                                ->orWhere('unit_sale_price', 'like', "%{$search}%")
-                                                ->orWhere('unit_purchase_price', 'like', "%{$search}%")
-                                                ->orWhere('avg_price', 'like', "%{$search}%");
-                                        }
-                                
-                                        return $query->get()
-                                            ->mapWithKeys(function ($product) {
-                                                return [$product->id => "
-                                                    <div>
-                                                        <strong>{$product->name}</strong><br>
-                                                        <span>Quantity: {$product->quantity}</span><br>
-                                                        <span>Sale Price: {$product->unit_sale_price}</span><br>
-                                                        <span>Purchase Price: {$product->unit_purchase_price}</span><br>
-                                                        <span>Avg Price: {$product->avg_price}</span>
-                                                    </div>
-                                                "];
-                                            });
-                                    })
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         if ($state) {
                                             $product = Product::find($state);
@@ -217,7 +190,7 @@ class SaleInvoiceResource extends Resource
                                     ->readOnly(),
                             ])->columns(9)
                             ->reactive()
-                            ->addActionLabel('Add Product'),
+                            ->addActionLabel('Add Product')
                     ]),
                 Section::make()
                     ->schema([
@@ -317,7 +290,7 @@ class SaleInvoiceResource extends Resource
                                     ->numeric(),
                             ])->columns(8),
                     ]),
-            ])->extraAttributes(['onkeydown' => 'return event.key != "Enter";']);
+                ]);
     }
 
     public static function table(Table $table): Table
