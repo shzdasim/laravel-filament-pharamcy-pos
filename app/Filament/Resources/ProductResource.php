@@ -10,8 +10,11 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\HtmlString;
 
 class ProductResource extends Resource
 {
@@ -205,6 +208,34 @@ class ProductResource extends Resource
             'create' => Pages\CreateProduct::route('/create'),
             'view' => Pages\ViewProduct::route('/{record}'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
+    {
+       $imageUrl = $record->image ? asset('storage/' . $record->image) : ''; // Use default image path if needed
+
+        return new HtmlString('<img src="' . $imageUrl . '" alt="' . $record->name . '" style="width: 150px; height: 120px; object-fit: cover; border-radius: 5%;"> ' . $record->name);
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'formulation'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Name' => $record->name,
+            'Formulation' => $record->formulation,
+            'Brand' => $record->brand->name,
+            'Supplier' => $record->supplier->name,
+            'Category' => $record->category->name,
+            'Pack Size' => $record->pack_size,
+            'Sale Price' => $record->pack_sale_price,
+            'Purchase Price' => $record->pack_purchase_price,
+            'Quantity' => $record->quantity,
+
         ];
     }
 }

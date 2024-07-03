@@ -324,9 +324,9 @@ class SaleInvoiceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
+                Tables\Columns\TextColumn::make('user.name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('customer_id')
+                Tables\Columns\TextColumn::make('customer.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('posted_number')
@@ -394,4 +394,6 @@ class SaleInvoiceResource extends Resource
             'edit' => Pages\EditSaleInvoice::route('/{record}/edit'),
         ];
     }
+
+    
 }
