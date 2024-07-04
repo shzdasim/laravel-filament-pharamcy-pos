@@ -11,6 +11,7 @@ use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 class PurchaseChart extends ApexChartWidget
 {
     use InteractsWithPageFilters;
+    protected static ?int $sort = 2;
     /**
      * Chart Id
      *

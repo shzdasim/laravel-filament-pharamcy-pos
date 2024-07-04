@@ -10,7 +10,7 @@ use Filament\Widgets\Concerns\InteractsWithPageFilters;
 class SalesChart extends ApexChartWidget
 {
     use InteractsWithPageFilters;
-    
+    protected static ?int $sort = 1;
     /**
      * Chart Id
      *
