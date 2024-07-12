@@ -52,6 +52,7 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 'Item Setup',
                 'INVOICES',
+                'RETURNS',
                 'Settings',
             ])
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
