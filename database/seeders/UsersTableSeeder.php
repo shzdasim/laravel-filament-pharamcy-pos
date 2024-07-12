@@ -22,9 +22,9 @@ class UsersTableSeeder extends Seeder
             'username' => 'superadmin',
             'firstname' => 'Super',
             'lastname' => 'Admin',
-            'email' => 'superadmin@starter-kit.com',
+            'email' => 'admin@pos.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('superadmin'),
+            'password' => Hash::make('password'),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -34,7 +34,7 @@ class UsersTableSeeder extends Seeder
 
         $roles = DB::table('roles')->whereNot('name', 'super_admin')->get();
         foreach ($roles as $role) {
-            for ($i = 0; $i < 10; $i++) {
+            for ($i = 0; $i < 1; $i++) {
                 $userId = Str::uuid();
                 DB::table('users')->insert([
                     'id' => $userId,

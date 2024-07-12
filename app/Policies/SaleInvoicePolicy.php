@@ -1,8 +1,9 @@
 <?php
+
 namespace App\Policies;
 
-use App\Models\SaleInvoice;
 use App\Models\User;
+use App\Models\SaleInvoice;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class SaleInvoicePolicy
@@ -10,7 +11,7 @@ class SaleInvoicePolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any sale invoices.
+     * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
@@ -18,7 +19,7 @@ class SaleInvoicePolicy
     }
 
     /**
-     * Determine whether the user can view the sale invoice.
+     * Determine whether the user can view the model.
      */
     public function view(User $user, SaleInvoice $saleInvoice): bool
     {
@@ -26,7 +27,7 @@ class SaleInvoicePolicy
     }
 
     /**
-     * Determine whether the user can create sale invoices.
+     * Determine whether the user can create models.
      */
     public function create(User $user): bool
     {
@@ -34,7 +35,7 @@ class SaleInvoicePolicy
     }
 
     /**
-     * Determine whether the user can update the sale invoice.
+     * Determine whether the user can update the model.
      */
     public function update(User $user, SaleInvoice $saleInvoice): bool
     {
@@ -42,7 +43,7 @@ class SaleInvoicePolicy
     }
 
     /**
-     * Determine whether the user can delete the sale invoice.
+     * Determine whether the user can delete the model.
      */
     public function delete(User $user, SaleInvoice $saleInvoice): bool
     {
@@ -50,7 +51,7 @@ class SaleInvoicePolicy
     }
 
     /**
-     * Determine whether the user can bulk delete sale invoices.
+     * Determine whether the user can bulk delete.
      */
     public function deleteAny(User $user): bool
     {
@@ -58,7 +59,7 @@ class SaleInvoicePolicy
     }
 
     /**
-     * Determine whether the user can permanently delete the sale invoice.
+     * Determine whether the user can permanently delete.
      */
     public function forceDelete(User $user, SaleInvoice $saleInvoice): bool
     {
@@ -66,7 +67,7 @@ class SaleInvoicePolicy
     }
 
     /**
-     * Determine whether the user can permanently bulk delete sale invoices.
+     * Determine whether the user can permanently bulk delete.
      */
     public function forceDeleteAny(User $user): bool
     {
@@ -74,7 +75,7 @@ class SaleInvoicePolicy
     }
 
     /**
-     * Determine whether the user can restore the sale invoice.
+     * Determine whether the user can restore.
      */
     public function restore(User $user, SaleInvoice $saleInvoice): bool
     {
@@ -82,7 +83,7 @@ class SaleInvoicePolicy
     }
 
     /**
-     * Determine whether the user can bulk restore sale invoices.
+     * Determine whether the user can bulk restore.
      */
     public function restoreAny(User $user): bool
     {
@@ -90,7 +91,7 @@ class SaleInvoicePolicy
     }
 
     /**
-     * Determine whether the user can replicate the sale invoice.
+     * Determine whether the user can replicate.
      */
     public function replicate(User $user, SaleInvoice $saleInvoice): bool
     {
@@ -98,7 +99,7 @@ class SaleInvoicePolicy
     }
 
     /**
-     * Determine whether the user can reorder sale invoices.
+     * Determine whether the user can reorder.
      */
     public function reorder(User $user): bool
     {
