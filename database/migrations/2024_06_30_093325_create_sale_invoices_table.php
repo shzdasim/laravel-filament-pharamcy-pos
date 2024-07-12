@@ -18,6 +18,9 @@ return new class extends Migration
             $table->foreignId('customer_id')->constrained()->onDelete('cascade');
             $table->string('posted_number');
             $table->date('date');
+            $table->string('remarks')->nullable();
+            $table->string('doctor_name')->nullable();
+            $table->string('patient_name')->nullable();
             $table->decimal('discount_percentage', 5, 2)->default(0)->nullable();
             $table->decimal('discount_amount', 10, 2)->default(0)->nullable();
             $table->decimal('tax_percentage', 5, 2)->default(0)->nullable();

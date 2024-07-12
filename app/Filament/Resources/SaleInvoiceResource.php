@@ -66,6 +66,12 @@ class SaleInvoiceResource extends Resource
                             ->required()
                             ->default(now())
                             ->native(false),
+                        Forms\Components\TextInput::make('remarks')
+                        ->maxLength(255),
+                        Forms\Components\TextInput::make('doctor_name')
+                        ->maxLength(255),
+                        Forms\Components\TextInput::make('patient_name')
+                        ->maxLength(255),
                     ])->columns(3),
                 Forms\Components\Section::make()
                     ->schema([
