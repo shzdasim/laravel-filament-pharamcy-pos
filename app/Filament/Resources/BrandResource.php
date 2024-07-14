@@ -89,7 +89,7 @@ class BrandResource extends Resource
     {
        $imageUrl = $record->image ? asset('storage/' . $record->image) : ''; // Use default image path if needed
 
-        return new HtmlString('<img src="' . $imageUrl . '" alt="' . $record->name . '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;"> ' . $record->name);
+        return new HtmlString('<img src="' . $imageUrl . '" alt="' . $record->name . '" style="width: 70px; height: 40px; object-fit: fit; border-radius: 5%;"> ' . $record->name);
     }
 
     public static function getGloballySearchableAttributes(): array

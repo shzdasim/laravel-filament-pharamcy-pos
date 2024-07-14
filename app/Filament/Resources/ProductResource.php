@@ -2,13 +2,16 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Imports\ProductImporter;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
+use Filament\Actions\ImportAction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ImportAction as ActionsImportAction;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -168,8 +171,8 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('supplier.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('brand.name')
-                    ->numeric()
+                Tables\Columns\ImageColumn::make('brand.image')
+                    
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -190,7 +193,12 @@ class ProductResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                ])
+            ])
+            ->headerActions([
+                ActionsImportAction::make()
+                    ->importer(ProductImporter::class)
+                    ->label('Import Products'),
             ]);
     }
 
@@ -213,7 +221,17 @@ class ProductResource extends Resource
 
     public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
     {
-       $imageUrl = $record->image ? asset('storage/' . $record->image) : ''; // Use default image path if needed
+        $imageUrl = '';
+        if ($record->image) {
+            if (filter_var($record->image, FILTER_VALIDATE_URL)) {
+                $imageUrl = $record->image;
+            } else {
+                $imageUrl = asset('storage/' . $record->image);
+            }
+        } else {
+            // Use a default image path if needed, e.g., a placeholder image
+            $imageUrl = asset('images/default.jpg'); // Change this to your default image path
+        }
 
         return new HtmlString('<img src="' . $imageUrl . '" alt="' . $record->name . '" style="width: 150px; height: 120px; object-fit: cover; border-radius: 5%;"> ' . $record->name);
     }
