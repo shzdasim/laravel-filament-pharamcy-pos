@@ -6,9 +6,14 @@ use App\Filament\Imports\ProductImporter;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
+use Closure;
 use Filament\Actions\ImportAction;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ImportAction as ActionsImportAction;
@@ -36,13 +41,33 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make()
-                ->schema([
-                    Forms\Components\FileUpload::make('image')
-                    ->image()
-                    ->directory('images/products')
-                    ->imageEditor(),
-                ]),
+                Section::make('Image')
+                    ->schema([
+                        FileUpload::make('image')
+                            ->image()
+                            ->directory('images/products')
+                            ->imageEditor()
+                            ->rules([
+                                'nullable',
+                                fn (Get $get): Closure => function (string $attribute, $value, Closure $fail) use ($get) {
+                                    if ($get('image') && $get('image_url')) {
+                                        $fail('Please provide either an image file or an image URL, not both.');
+                                    }
+                                }
+                            ]),
+                        TextInput::make('image_url')
+                            ->url()
+                            ->label('Image URL')
+                            ->placeholder('https://example.com/image.jpg')
+                            ->rules([
+                                'nullable',
+                                fn (Get $get): Closure => function (string $attribute, $value, Closure $fail) use ($get) {
+                                    if ($get('image') && $get('image_url')) {
+                                        $fail('Please provide either an image file or an image URL, not both.');
+                                    }
+                                }
+                            ]),
+                    ]),
                 Forms\Components\Section::make()
                 ->schema([
                     Forms\Components\TextInput::make('product_code')
