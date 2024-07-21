@@ -7,6 +7,7 @@ use App\Filament\Pages\Auth\Login;
 use App\Filament\Pages\Auth\RequestPasswordReset;
 use App\Livewire\MyProfileExtended;
 use App\Settings\GeneralSettings;
+use EightyNine\Reports\ReportsPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -109,7 +110,8 @@ class AdminPanelProvider extends PanelProvider
                     FilamentApexChartsPlugin::make(),
                     FilamentSpatieLaravelBackupPlugin::make()
                     ->timeout(120)
-                    ->usingPolingInterval('10s')
+                    ->usingPolingInterval('10s'),
+                    ReportsPlugin::make(),
             ]);
     }
 }
