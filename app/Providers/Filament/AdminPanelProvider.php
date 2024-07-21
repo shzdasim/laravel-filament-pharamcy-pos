@@ -24,6 +24,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
+use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -105,7 +106,10 @@ class AdminPanelProvider extends PanelProvider
                     ->myProfileComponents([
                         'personal_info' => MyProfileExtended::class,
                     ]),
-                    FilamentApexChartsPlugin::make()
+                    FilamentApexChartsPlugin::make(),
+                    FilamentSpatieLaravelBackupPlugin::make()
+                    ->timeout(120)
+                    ->usingPolingInterval('10s')
             ]);
     }
 }
