@@ -14,7 +14,7 @@ class CreatePurchaseInvoice extends CreateRecord
     {
         return [
             Action::make('create')
-                ->label('Create Sale Invoice')
+                ->label('Create Purchase Invoice')
                 ->submit('store')
                 ->keyBindings(['option+s', 'alt+s']),
 

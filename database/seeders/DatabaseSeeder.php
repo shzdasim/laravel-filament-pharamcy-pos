@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             BrandsTableSeeder::class,
             CategoriesTableSeeder::class,
+            SuppliersTableSeeder::class,
+            CustomersTableSeeder::class,
         ]);
 
         Artisan::call('shield:generate --all');

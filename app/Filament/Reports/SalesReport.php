@@ -16,7 +16,7 @@ use EightyNine\Reports\Components\Text;
 class SalesReport extends Report
 {
     public ?string $heading = "Sales Report";
-    // Add the navigation icon here
+
     protected static ?string $navigationIcon = 'heroicon-o-document-report';
 
     public function header(Header $header): Header
@@ -61,7 +61,7 @@ class SalesReport extends Report
                                 $itemDiscount = $items->sum('item_discount');
                                 $invoiceDiscount = $items->sum('discount_amount');
                                 $totalSale = $items->sum('total');
-                                
+
                                 // Calculate sale return
                                 $saleReturn = $items->sum(function ($item) {
                                     return $item->saleReturns->sum('total');
@@ -87,9 +87,9 @@ class SalesReport extends Report
                                             $quantityToConsider = min($remainingQuantity, $purchaseQuantity);
                                             $remainingQuantity -= $quantityToConsider;
 
-                                            $purchasePrice = $purchaseItem->purchase_price;
+                                            $purchasePrice = $purchaseItem->unit_purchase_price;
                                             $purchaseDiscount = $purchasePrice * $purchaseItem->item_discount_percentage / 100;
-                                            $purchaseTax = $purchasePrice * $purchaseItem->purchaseInvoice->tax_percentage / 100;
+                                            $purchaseTax = $purchasePrice * $purchaseItem->tax_percentage / 100;
 
                                             $totalCost += ($purchasePrice - $purchaseDiscount + $purchaseTax) * $quantityToConsider;
                                         }

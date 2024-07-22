@@ -22,6 +22,10 @@ class SaleInvoice extends Model
     public function saleInvoiceItems(){
         return $this->hasMany(SaleInvoiceItem::class);
     }
+    public function saleReturns()
+    {
+        return $this->hasMany(SaleReturn::class);
+    }
     protected static function boot()
     {
         parent::boot();
