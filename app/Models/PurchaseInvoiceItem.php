@@ -79,8 +79,26 @@ class PurchaseInvoiceItem extends Model
                 $originalQuantity = $original['quantity'];
                 $originalPurchasePrice = $original['unit_purchase_price'];
 
-                $totalQuantity = $oldQuantity - $originalQuantity + $newQuantity;
-                $totalCost = ($oldQuantity * $oldPurchasePrice) - ($originalQuantity * $originalPurchasePrice) + ($newQuantity * $newPurchasePrice);
+                // If product_id changes, handle old and new products separately
+                if ($original['product_id'] !== $item->product_id) {
+                    // Update old product
+                    $oldProduct = Product::find($original['product_id']);
+                    if ($oldProduct) {
+                        $oldProduct->load('purchaseInvoiceItems');
+                        $totalQuantityOldProduct = $oldProduct->quantity - $originalQuantity;
+                        $totalCostOldProduct = ($oldProduct->quantity * $oldProduct->avg_price) - ($originalQuantity * $originalPurchasePrice);
+                        $oldProduct->quantity = $totalQuantityOldProduct;
+                        $oldProduct->avg_price = ($totalQuantityOldProduct > 0) ? $totalCostOldProduct / $totalQuantityOldProduct : 0;
+                        $oldProduct->save();
+                    }
+
+                    // Update new product
+                    $totalQuantity = $oldQuantity + $newQuantity;
+                    $totalCost = ($oldQuantity * $oldPurchasePrice) + ($newQuantity * $newPurchasePrice);
+                } else {
+                    $totalQuantity = $oldQuantity - $originalQuantity + $newQuantity;
+                    $totalCost = ($oldQuantity * $oldPurchasePrice) - ($originalQuantity * $originalPurchasePrice) + ($newQuantity * $newPurchasePrice);
+                }
             } elseif ($action == 'delete') {
                 $totalQuantity = $oldQuantity - $newQuantity;
                 $totalCost = ($oldQuantity * $oldPurchasePrice) - ($newQuantity * $newPurchasePrice);
