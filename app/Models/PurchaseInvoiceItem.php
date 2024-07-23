@@ -58,47 +58,51 @@ class PurchaseInvoiceItem extends Model
     protected static function updateProduct($item, $action)
     {
         $product = $item->product;
-        
+
         if ($product) {
             // Ensure the relationship is loaded
             $product->load('purchaseInvoiceItems');
 
-            // Initialize totals
-            $totalPackQuantity = $product->purchaseInvoiceItems->sum('pack_quantity') ?? 0;
-            $totalUnitQuantity = $product->purchaseInvoiceItems->sum('unit_quantity') ?? 0;
-            $totalPackBonus = $product->purchaseInvoiceItems->sum('pack_bonus') ?? 0;
-            $totalUnitBonus = $product->purchaseInvoiceItems->sum('unit_bonus') ?? 0;
+            // Get old values
+            $oldQuantity = $product->quantity ?? 0;
+            $oldPurchasePrice = $product->avg_price ?? 0;
 
-            // Adjust totals based on the action
+            // Get new values
+            $newQuantity = $item->quantity;
+            $newPurchasePrice = $item->unit_purchase_price;
+
             if ($action == 'create') {
-                $totalPackQuantity += $item->pack_quantity;
-                $totalUnitQuantity += $item->unit_quantity;
-                $totalPackBonus += $item->pack_bonus;
-                $totalUnitBonus += $item->unit_bonus;
+                $totalQuantity = $oldQuantity + $newQuantity;
+                $totalCost = ($oldQuantity * $oldPurchasePrice) + ($newQuantity * $newPurchasePrice);
             } elseif ($action == 'update') {
                 $original = $item->getOriginal();
-                $totalPackQuantity += ($item->pack_quantity - $original['pack_quantity']);
-                $totalUnitQuantity += ($item->unit_quantity - $original['unit_quantity']);
-                $totalPackBonus += ($item->pack_bonus - $original['pack_bonus']);
-                $totalUnitBonus += ($item->unit_bonus - $original['unit_bonus']);
+                $originalQuantity = $original['quantity'];
+                $originalPurchasePrice = $original['unit_purchase_price'];
+
+                $totalQuantity = $oldQuantity - $originalQuantity + $newQuantity;
+                $totalCost = ($oldQuantity * $oldPurchasePrice) - ($originalQuantity * $originalPurchasePrice) + ($newQuantity * $newPurchasePrice);
             } elseif ($action == 'delete') {
-                $totalPackQuantity -= $item->pack_quantity;
-                $totalUnitQuantity -= $item->unit_quantity;
-                $totalPackBonus -= $item->pack_bonus;
-                $totalUnitBonus -= $item->unit_bonus;
+                $totalQuantity = $oldQuantity - $newQuantity;
+                $totalCost = ($oldQuantity * $oldPurchasePrice) - ($newQuantity * $newPurchasePrice);
             }
 
-            // Calculate total quantity
-            $totalQuantity = ($totalPackQuantity * $product->pack_size) + $totalUnitBonus;
+            // Calculate new average price
+            $newAvgPrice = ($totalQuantity > 0) ? $totalCost / $totalQuantity : 0;
+
+            // Calculate margin
+            $salePrice = $item->unit_sale_price; // Assuming unit sale price, adjust if necessary
+            $margin = ($salePrice > 0) ? (($salePrice - $newAvgPrice) / $salePrice) * 100 : 0;
+
+            // Update product fields with calculated values
+            $product->quantity = $totalQuantity;
+            $product->avg_price = $newAvgPrice;
+            $product->margin = $margin;
 
             // Update product fields with values directly from the form fields
-            $product->quantity = $totalQuantity;
             $product->pack_purchase_price = $item->pack_purchase_price;
             $product->unit_purchase_price = $item->unit_purchase_price;
             $product->pack_sale_price = $item->pack_sale_price;
             $product->unit_sale_price = $item->unit_sale_price;
-            $product->avg_price = $item->avg_price;
-            $product->margin = $item->margin;
 
             $product->save();
         }
