@@ -14,6 +14,11 @@ class ViewProduct extends ViewRecord
     {
         return [
             Actions\EditAction::make(),
+            Actions\Action::make('createProduct')
+                ->label('Create New Product')
+                ->url(ProductResource::getUrl('create'))
+                ->icon('heroicon-o-plus')
+                ->keyBindings(['option+n', 'alt+n']),
         ];
     }
 

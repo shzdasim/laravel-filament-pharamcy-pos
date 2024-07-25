@@ -19,7 +19,7 @@ class CreatePurchaseInvoice extends CreateRecord
                 ->keyBindings(['option+s', 'alt+s']),
 
             Action::make('addRepeaterItem')
-                ->keyBindings(['option+n', 'alt+n'])
+                ->keyBindings(['arrow-down', 'alt+n'])
                 ->color('secondary')
                 ->action(function () {
                     // Safeguard to ensure the action is not triggered multiple times

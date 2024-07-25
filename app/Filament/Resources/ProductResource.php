@@ -2,11 +2,14 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\ProductExporter;
 use App\Filament\Imports\ProductImporter;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
 use Closure;
+use Filament\Actions\ExportAction;
+use Filament\Actions\Exports\Exporter;
 use Filament\Actions\ImportAction;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
@@ -16,6 +19,7 @@ use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ExportAction as ActionsExportAction;
 use Filament\Tables\Actions\ImportAction as ActionsImportAction;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
@@ -77,6 +81,7 @@ class ProductResource extends Resource
                     ->default(Product::generateCode()),
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->autofocus()
                     ->maxLength(255),
                     Forms\Components\TextInput::make('formulation')
                     ->maxLength(255),
@@ -224,6 +229,9 @@ class ProductResource extends Resource
                 ActionsImportAction::make()
                     ->importer(ProductImporter::class)
                     ->label('Import Products'),
+                ActionsExportAction::make()
+                    ->exporter(ProductExporter::class)
+                    ->label('Export Products'),
             ]);
     }
 

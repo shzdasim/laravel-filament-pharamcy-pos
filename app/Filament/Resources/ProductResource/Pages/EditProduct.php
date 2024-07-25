@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 class EditProduct extends EditRecord
 {
     protected static string $resource = ProductResource::class;
-
     protected function mutateFormDataBeforeSave(array $data): array
     {
         if (!empty($data['image_url'])) {
