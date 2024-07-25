@@ -1,0 +1,75 @@
+2024-07-24 17:56:41,860 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-07-24 17:56:41,866 INFO supervisord started with pid 1
+2024-07-24 17:56:42,873 INFO spawned: 'nginx' with pid 7
+2024-07-24 17:56:42,882 INFO spawned: 'node' with pid 8
+2024-07-24 17:56:42,886 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 17:56:43,895 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-24 17:56:43,897 INFO success: node entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-24 17:56:43,898 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 17:56:46,623 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 17:56:50,146 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 17:56:50,147 INFO gave up: php-fpm entered FATAL state, too many start retries too quickly
+2024-07-24 17:58:24,592 WARN received SIGQUIT indicating exit request
+2024-07-24 17:58:24,598 INFO waiting for nginx, node to die
+2024-07-24 17:58:26,608 WARN stopped: node (terminated by SIGTERM)
+2024-07-24 17:58:26,632 INFO stopped: nginx (exit status 0)
+2024-07-24 17:59:34,352 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-07-24 17:59:34,363 INFO supervisord started with pid 1
+2024-07-24 17:59:35,372 INFO spawned: 'nginx' with pid 7
+2024-07-24 17:59:35,416 INFO spawned: 'node' with pid 8
+2024-07-24 17:59:35,596 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 17:59:36,635 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-24 17:59:36,655 INFO success: node entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-24 17:59:36,656 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 17:59:39,040 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 17:59:42,172 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 17:59:42,173 INFO gave up: php-fpm entered FATAL state, too many start retries too quickly
+2024-07-24 18:05:44,093 WARN received SIGQUIT indicating exit request
+2024-07-24 18:05:44,098 INFO waiting for nginx, node to die
+2024-07-24 18:05:46,108 WARN stopped: node (terminated by SIGTERM)
+2024-07-24 18:05:46,122 INFO stopped: nginx (exit status 0)
+2024-07-24 18:05:53,940 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-07-24 18:05:53,947 INFO supervisord started with pid 1
+2024-07-24 18:05:54,958 INFO spawned: 'nginx' with pid 7
+2024-07-24 18:05:54,973 INFO spawned: 'node' with pid 8
+2024-07-24 18:05:54,979 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 18:05:55,991 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-24 18:05:55,992 INFO success: node entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-24 18:05:55,997 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 18:05:58,308 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 18:06:01,314 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 18:06:01,315 INFO gave up: php-fpm entered FATAL state, too many start retries too quickly
+2024-07-24 18:07:36,523 WARN received SIGQUIT indicating exit request
+2024-07-24 18:07:36,526 INFO waiting for nginx, node to die
+2024-07-24 18:07:38,535 WARN stopped: node (terminated by SIGTERM)
+2024-07-24 18:07:38,545 INFO stopped: nginx (exit status 0)
+2024-07-24 18:07:39,483 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-07-24 18:07:39,492 INFO supervisord started with pid 1
+2024-07-24 18:07:40,498 INFO spawned: 'nginx' with pid 7
+2024-07-24 18:07:40,506 INFO spawned: 'node' with pid 8
+2024-07-24 18:07:40,507 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 18:07:41,611 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-24 18:07:41,612 INFO success: node entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-24 18:07:41,613 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 18:07:43,724 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 18:07:46,730 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 18:07:46,731 INFO gave up: php-fpm entered FATAL state, too many start retries too quickly
+2024-07-24 18:13:06,446 WARN received SIGQUIT indicating exit request
+2024-07-24 18:13:06,448 INFO waiting for nginx, node to die
+2024-07-24 18:13:08,455 WARN stopped: node (terminated by SIGTERM)
+2024-07-24 18:13:08,468 INFO stopped: nginx (exit status 0)
+2024-07-24 18:14:50,570 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-07-24 18:14:50,579 INFO supervisord started with pid 1
+2024-07-24 18:14:51,588 INFO spawned: 'nginx' with pid 7
+2024-07-24 18:14:51,600 INFO spawned: 'node' with pid 8
+2024-07-24 18:14:51,605 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 18:14:52,615 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-24 18:14:52,625 INFO success: node entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-07-24 18:14:52,643 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 18:14:55,253 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 18:14:58,437 INFO spawnerr: can't find command '/usr/sbin/php-fpm'
+2024-07-24 18:14:58,439 INFO gave up: php-fpm entered FATAL state, too many start retries too quickly
+2024-07-24 18:15:40,544 WARN received SIGQUIT indicating exit request
+2024-07-24 18:15:40,547 INFO waiting for nginx, node to die
+2024-07-24 18:15:42,557 WARN stopped: node (terminated by SIGTERM)
+2024-07-24 18:15:42,566 INFO stopped: nginx (exit status 0)
