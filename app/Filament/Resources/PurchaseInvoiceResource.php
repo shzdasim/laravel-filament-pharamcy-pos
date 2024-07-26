@@ -79,6 +79,7 @@ class PurchaseInvoiceResource extends Resource
                                 Forms\Components\Select::make('product_id')
                                     ->relationship('product', 'name')
                                     ->label('Product')
+                                    ->autofocus()
                                     ->searchable()
                                     ->native(false)
                                     ->preload()

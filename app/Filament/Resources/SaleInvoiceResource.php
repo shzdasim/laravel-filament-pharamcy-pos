@@ -83,6 +83,7 @@ class SaleInvoiceResource extends Resource
                                     ->label('Select Product')
                                     ->relationship('product', 'name')
                                     ->required()
+                                    ->autofocus()
                                     ->searchable()
                                     ->preload()
                                     ->reactive()
