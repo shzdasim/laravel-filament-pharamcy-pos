@@ -14,6 +14,11 @@ class ViewSaleInvoice extends ViewRecord
     {
         return [
             Actions\EditAction::make(),
+            Actions\Action::make('createSaleInvoice')
+                ->label('Create Sale Invoice')
+                ->url(SaleInvoiceResource::getUrl('create'))
+                ->icon('heroicon-o-plus')
+                ->keyBindings(['option+n', 'alt+n']),
         ];
     }
 }

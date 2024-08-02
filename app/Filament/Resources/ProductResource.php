@@ -263,7 +263,7 @@ class ProductResource extends Resource
             }
         } else {
             // Use a default image path if needed, e.g., a placeholder image
-            $imageUrl = asset('images/default.jpg'); // Change this to your default image path
+            $imageUrl = asset('images/no-image.png'); // Change this to your default image path
         }
 
         return new HtmlString('<img src="' . $imageUrl . '" alt="' . $record->name . '" style="width: 150px; height: 120px; object-fit: cover; border-radius: 5%;"> ' . $record->name);
