@@ -15,10 +15,8 @@ class CategoriesTableSeeder extends Seeder
     {
        $categories = [
         ['name' => 'Medicines'],
-        ['name' => 'General'],
         ['name' => 'Narcotics'],
         ['name' => 'Drops'],
-        ['name' => 'Creams'],
        ];
        foreach ($categories as $category) {
         DB::table('categories')->insert([

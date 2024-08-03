@@ -1,12 +1,14 @@
 <?php
 namespace App\Filament\Resources;
 
+use App\Filament\Imports\BrandImporter;
 use App\Filament\Resources\BrandResource\Pages;
 use App\Models\Brand;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
@@ -42,6 +44,7 @@ class BrandResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('image'),
@@ -65,7 +68,12 @@ class BrandResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->headerActions([
+                ImportAction::make()
+                    ->importer(BrandImporter::class)
+                    ->label('Import Brands'),
+                ]);
     }
 
     public static function getRelations(): array

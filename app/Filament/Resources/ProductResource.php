@@ -165,6 +165,7 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')->sortable(),
                 Tables\Columns\TextColumn::make('product_code')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
@@ -204,7 +205,7 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('supplier.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\ImageColumn::make('brand.image')
+                Tables\Columns\TextColumn::make('brand.name')
                     
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
