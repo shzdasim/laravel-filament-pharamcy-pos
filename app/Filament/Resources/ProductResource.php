@@ -23,6 +23,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\ExportAction as ActionsExportAction;
 use Filament\Tables\Actions\ImportAction as ActionsImportAction;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -218,7 +219,24 @@ class ProductResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('brand')
+                    ->relationship('brand', 'name')
+                    ->native(false)
+                    ->searchable()
+                    ->preload()
+                    ->label('Brand'),
+                SelectFilter::make('category')
+                    ->relationship('category', 'name')
+                    ->native(false)
+                    ->searchable()
+                    ->preload()
+                    ->label('Category'),
+                SelectFilter::make('supplier')
+                    ->relationship('supplier', 'name')
+                    ->native(false)
+                    ->searchable()
+                    ->preload()
+                    ->label('Supplier'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

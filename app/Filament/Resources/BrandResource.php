@@ -95,7 +95,7 @@ class BrandResource extends Resource
 
     public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
     {
-       $imageUrl = $record->image ? asset('storage/' . $record->image) : ''; // Use default image path if needed
+       $imageUrl = $record->image ? asset('storage/' . $record->image) : asset('images/no-image.png'); // Use default image path if needed
 
         return new HtmlString('<img src="' . $imageUrl . '" alt="' . $record->name . '" style="width: 70px; height: 40px; object-fit: fit; border-radius: 5%;"> ' . $record->name);
     }
