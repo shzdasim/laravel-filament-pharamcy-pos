@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Exports\ProductExporter;
 use App\Filament\Imports\ProductImporter;
 use App\Filament\Resources\ProductResource\Pages;
+use App\Filament\Resources\ProductResource\Pages\ListProducts;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
 use Closure;
@@ -19,11 +20,13 @@ use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\ExportAction as ActionsExportAction;
 use Filament\Tables\Actions\ImportAction as ActionsImportAction;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\HtmlString;
@@ -37,7 +40,7 @@ class ProductResource extends Resource
    }
     protected static int $globalSearchResultsLimit = 20;
 
-    protected static ?int $navigationSort = -1;
+    protected static ?int $navigationSort = -1; 
     protected static ?string $navigationIcon = 'heroicon-s-shopping-bag';
     protected static ?string $navigationGroup = 'Item Setup';
 
@@ -223,6 +226,32 @@ class ProductResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    BulkAction::make('update')
+                    ->label('Update')
+                    ->icon('heroicon-o-arrow-up-on-square')
+                    ->color('warning')
+                    ->action(fn (Collection $records, array $data) => ListProducts::bulkUpdate($records, $data))
+                        ->form([
+                            Forms\Components\Select::make('category_id')
+                                ->relationship('category', 'name')
+                                ->required()
+                                ->searchable()
+                                ->preload()
+                                ->native(false),
+                            Forms\Components\Select::make('supplier_id')
+                                ->relationship('supplier', 'name')
+                                ->required()
+                                ->searchable()
+                                ->preload()
+                                ->native(false),
+                            Forms\Components\Select::make('brand_id')
+                                ->relationship('brand', 'name')
+                                ->required()
+                                ->searchable()
+                                ->preload()
+                                ->native(false),
+                        ])
+                        ->requiresConfirmation()
                 ])
             ])
             ->headerActions([
