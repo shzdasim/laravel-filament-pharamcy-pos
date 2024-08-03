@@ -13,8 +13,8 @@ class Login extends BasePage
         parent::mount();
 
         $this->form->fill([
-            'email' => 'superadmin@starter-kit.com',
-            'password' => 'superadmin',
+            'email' => 'admin@pos.com',
+            'password' => 'password',
         ]);
     }
 
