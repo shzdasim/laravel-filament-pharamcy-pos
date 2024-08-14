@@ -42,6 +42,15 @@ class CreatePurchaseInvoice extends CreateRecord
         if (!isset($this->data['purchaseInvoiceItems'])) {
             $this->data['purchaseInvoiceItems'] = [];
         }
-        $this->data['purchaseInvoiceItems'][] = [];
+        $this->data['purchaseInvoiceItems'][] = [
+            'product_id' => null,
+            'pack_size' => null,
+            'pack_purchase_price' => 0,
+            'unit_purchase_price' => 0,
+            'pack_sale_price' => 0,
+            'unit_sale_price' => 0,
+            'sub_total' => 0,
+        ];
+        $this->fill($this->data);
     }
 }

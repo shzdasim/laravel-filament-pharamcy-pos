@@ -3,8 +3,6 @@
 namespace App\Filament\Resources\SaleInvoiceResource\Pages;
 
 use App\Filament\Resources\SaleInvoiceResource;
-use Filament\Actions;
-use Filament\Forms\Components\Repeater;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 
@@ -43,6 +41,16 @@ class CreateSaleInvoice extends CreateRecord
         if (!isset($this->data['saleInvoiceItems'])) {
             $this->data['saleInvoiceItems'] = [];
         }
-        $this->data['saleInvoiceItems'][] = [];
+        $this->data['saleInvoiceItems'][] = [
+            'product_id' => null,
+            'pack_size' => null,
+            'current_quantity' => 0,
+            'quantity' => 0,
+            'price' => 0,
+            'item_discount_percentage' => 0,
+            'sub_total' => 0,
+        ];
+
+        $this->fill($this->data);
     }
 }

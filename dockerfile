@@ -47,6 +47,6 @@ RUN if [ -f /var/www/html/public/build/manifest.json ]; then echo "manifest.json
 # Change current user to www
 USER www-data
 
-# Expose port 9000 and start php-fpm server
-EXPOSE 9000
+# Expose port 8500 and start php-fpm server
+EXPOSE 8500
 CMD ["php-fpm"]

@@ -1,5 +1,5 @@
 <?php
-
+ini_set('memory_limit', '-1');
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 

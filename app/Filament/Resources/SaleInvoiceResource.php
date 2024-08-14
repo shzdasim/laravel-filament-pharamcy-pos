@@ -18,6 +18,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Cache;
 
 class SaleInvoiceResource extends Resource
 {
@@ -81,28 +82,37 @@ class SaleInvoiceResource extends Resource
                             ->schema([
                                 Forms\Components\Select::make('product_id')
                                     ->label('Select Product')
-                                    ->relationship('product', 'name')
                                     ->required()
                                     ->autofocus()
                                     ->searchable()
-                                    ->preload()
+                                    ->searchPrompt('Search Products by their name')
+                                    ->searchDebounce(200)
                                     ->reactive()
-                                    ->allowHtml()
-                                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                                        if ($state) {
-                                            $product = Product::find($state);
-                                            if ($product) {
-                                                $set('current_quantity', $product->quantity);
-                                                $set('price', $product->unit_sale_price);
-                                                $set('pack_size', $product->pack_size);
-                                                $set('../../product_margin', $product->margin); // Update the margin in summary section
-                                            } else {
-                                                $set('current_quantity', 0);
-                                                $set('price', 0);
-                                                $set('../../product_margin', null); // Reset the margin in summary section
-                                            }
-                                        }
+                                    ->getSearchResultsUsing(function (string $search): array {
+                                        $cacheKey = "product_search_{$search}";
+                                        return Cache::remember($cacheKey, 60, function () use ($search) {
+                                            return Product::where('name', 'like', "{$search}%")->limit(50)->pluck('name', 'id')->toArray();
+                                        });
                                     })
+                                    ->getOptionLabelUsing(fn ($value): ?string => 
+                                        Product::find($value)?->name
+                                    )
+                                        ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                            if ($state) {
+                                                $product = Product::find($state);
+                                                if ($product) {
+                                                    $set('current_quantity', $product->quantity);
+                                                    $set('price', $product->unit_sale_price);
+                                                    $set('pack_size', $product->pack_size);
+                                                    $set('product_margin', $product->margin);
+                                                } else {
+                                                    $set('current_quantity', 0);
+                                                    $set('price', 0);
+                                                    $set('pack_size', 0);
+                                                    $set('product_margin', null);
+                                                }
+                                            }
+                                        })
                                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                                     ->columnSpan(3),
                                 Forms\Components\TextInput::make('pack_size')->readonly(),
@@ -115,7 +125,7 @@ class SaleInvoiceResource extends Resource
                                     ->required()
                                     ->numeric()
                                     ->reactive()
-                                    ->debounce(500) // Debounce added here
+                                    ->debounce(200) // Debounce added here
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         $current_quantity = $get('current_quantity') ?? 0;
                                         $price = $get('price') ?? 0;
@@ -162,7 +172,7 @@ class SaleInvoiceResource extends Resource
                                     ->numeric()
                                     ->default(0)
                                     ->reactive()
-                                    ->debounce(500) // Debounce added here
+                                    ->debounce(200) // Debounce added here
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         $item_discount = $state ?? 0;
                                         $price = $get('price') ?? 0;
@@ -207,7 +217,7 @@ class SaleInvoiceResource extends Resource
                                     ->label('Discount %')
                                     ->numeric()
                                     ->reactive()
-                                    ->debounce(500) // Debounce added here
+                                    ->debounce(200) // Debounce added here
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         $discount = $state ?? 0;
                                         $original_total_amount = collect($get('saleInvoiceItems'))
@@ -224,7 +234,7 @@ class SaleInvoiceResource extends Resource
                                     ->label('Disc. Amount')
                                     ->numeric()
                                     ->reactive()
-                                    ->debounce(500) // Debounce added here
+                                    ->debounce(200) // Debounce added here
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         $discount_amount = $state ?? 0;
                                         $original_total_amount = collect($get('saleInvoiceItems'))
@@ -241,7 +251,7 @@ class SaleInvoiceResource extends Resource
                                     ->label('Tax %')
                                     ->numeric()
                                     ->reactive()
-                                    ->debounce(500) // Debounce added here
+                                    ->debounce(200) // Debounce added here
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         $tax = $state ?? 0;
                                         $original_total_amount = collect($get('saleInvoiceItems'))
@@ -257,7 +267,7 @@ class SaleInvoiceResource extends Resource
                                     ->label('Tax Amount')
                                     ->numeric()
                                     ->reactive()
-                                    ->debounce(500) // Debounce added here
+                                    ->debounce(200) // Debounce added here
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         $tax_amount = $state ?? 0;
                                         $original_total_amount = collect($get('saleInvoiceItems'))
