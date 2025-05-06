@@ -80,4 +80,13 @@ class Product extends Model
             throw $e;
         }
     }
+
+
+
+    // In your Product model
+public function getDisplayNameAttribute()
+{
+    return "{$this->name} - Qty: {$this->quantity} - Sale Price: {$this->unit_sale_price} - Purchase Price: {$this->unit_purchase_price}";
+}
+
 }

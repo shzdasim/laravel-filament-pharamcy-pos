@@ -85,6 +85,11 @@ class PurchaseInvoiceResource extends Resource
                                     ->preload()
                                     ->required()
                                     ->reactive()
+                                    ->options(function () {
+                                        return Product::all()->mapWithKeys(function ($product) {
+                                            return [$product->id => $product->display_name];
+                                        });
+                                    })
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         if ($state) {
                                             $product = Product::find($state);
